@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>Examples</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<script src="http://kof.wanmei.com/static/public/jquery.min.js"></script>
+<style>
+   span{
+    display: inline-block;
+    position: :relative;
+    left:100px;
+   }
+    </style>
+</head>
+<body>
+
+<script>
+function creat(){
+    var result = new Array();
+
+    for(var i=0; i<10; i++){
+        result[i] = function(num){
+            return function(){
+                return num
+            };
+        }(i);
+    }
+
+    return result;
+}
+creat();
+
+var funca = creat();
+
+for(var i = 0; i < funca.length; i++) {
+    console.log(funca[i]())
+}
+</script>
+
+
+    <span>--</span>
+</body>
+</html>
