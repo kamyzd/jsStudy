@@ -38,7 +38,24 @@
     	float:left;
       position:relative;
     }
-
+    .lunbo-left{
+      margin-left: 300px;
+    }
+    .bbtn{
+      width:60px;
+      height: 30px;
+      text-align: center;
+      border:none;
+      font-family: "SimHei";
+      margin-top: 10px;
+      outline: none;
+      cursor: pointer;
+      background-color: #6d5889;
+      color:#fff;
+    }
+    .bbtn:hover{
+       background-color: #573882;
+    }
 </style>
 </head>
 <body>
@@ -58,55 +75,56 @@
 
 			</div>
 		</div>
-		<button class="lunbo-left">左</button>
-		<button class="lunbo-right">右</button>
+		<button class="lunbo-left bbtn" id="ll">左</button>
+		<button class="lunbo-right bbtn" id="rr">右</button>
 	</div>
 </body>
 <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
 	<script>
 
 	 $(document).ready(function(){
+
              var pbox=document.getElementById("pic-ul");
              var wid=(pbox.children.length)*782;
              $(".pic-wrap").css("width",wid);
-             $(".lunbo-left").click(function(ev){
-                 moveLeft();
-             });
+             var ll=document.getElementById("ll");
+             var rr=document.getElementById("rr");
 
-             $(".lunbo-right").click(function(){
-                 moveRight(); 
-             });
-
-             function moveLeft(){
-                 $(pbox).animate({
-                    left:"+=782px",
-                  },1,function(){
-                     // 取li---------------------------------------
-                      var a=$(pbox.children[0]).detach();
-                      $(pbox).append(a);
+             var moveLeft = function(){
+                  $(pbox).animate({
+                     left:"+=782px",
+                   },1,function(){
+                     ll.removeEventListener("click",moveLeft,false);
                       // 取li---------------------------------------
-                      $(pbox).animate({
-                          left:"-=782px"
-                       },500,function(){
-                     });
-                    
-                  }); 
+                       var a=$(pbox.children[0]).detach();
+                       $(pbox).append(a);
+                       // 取li---------------------------------------
+                       $(pbox).animate({
+                           left:"-=782px"
+                        },500,function(){
+                          ll.addEventListener("click",moveLeft,false);
+                      });
+                   }); 
              }
 
-          function moveRight(){
-              $(pbox).animate({
-                 left:"-=782px"
-               },1,function(){
-                   // 取li---------------------------------------
-                   var a=$(pbox.children[pbox.children.length-1]).detach();
-                   $(a).insertBefore(pbox.children[0]);
-                   // 取li---------------------------------------
-                   $(pbox).animate({
-                       left:"+=782px"
-                    },500,function(){
-                  });
-               }); 
-          }
+              var moveRight = function(){
+                  $(pbox).animate({
+                     left:"-=782px"
+                   },1,function(){
+                         rr.removeEventListener("click",moveRight,false);
+                       // 取li---------------------------------------
+                       var a=$(pbox.children[pbox.children.length-1]).detach();
+                       $(a).insertBefore(pbox.children[0]);
+                       // 取li---------------------------------------
+                       $(pbox).animate({
+                           left:"+=782px"
+                        },500,function(){
+                          rr.addEventListener("click",moveRight,false);
+                      });
+                   }); 
+              }
+             ll.addEventListener("click",moveLeft,false);
+             rr.addEventListener("click",moveRight,false);
 	 });
 	</script>
 </html>
