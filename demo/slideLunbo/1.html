@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>滑动轮播</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<style>
+   body{
+   	margin:0px;
+   	padding:0px;
+   }
+    .wrap{
+      width:782px;
+      height:450px;
+      margin:0px auto;
+    }
+    .box{
+    	width:782px;
+    	height:403px;
+      overflow: hidden;
+    }
+    .pic-wrap{
+    	height:403px;
+      position: relative;
+      left:-782px;
+     overflow: hidden;
+    }
+    .pic-wrap ul{
+    	margin:0px;
+    	padding:0px;
+      position:relative;
+      list-style-type:none;
+    }
+    .pic-wrap li{
+    	float:left;
+      position:relative;
+    }
+    .lunbo-left{
+      margin-left: 300px;
+    }
+    .bbtn{
+      width:60px;
+      height: 30px;
+      text-align: center;
+      border:none;
+      font-family: "SimHei";
+      margin-top: 10px;
+      outline: none;
+      cursor: pointer;
+      background-color: #6d5889;
+      color:#fff;
+    }
+    .bbtn:hover{
+       background-color: #573882;
+    }
+</style>
+</head>
+<body>
+	<div class="wrap">
+		<div class="box">
+			<div class="pic-wrap" id="pic-wrap">
+				<ul id="pic-ul">
+					<li><img src="images/duangpic1.png" /></li>
+					<li><img src="images/duangpic2.png" /></li>
+					<li><img src="images/duangpic3.png" /></li>
+					<li><img src="images/duangpic4.png" /></li>
+					<li><img src="images/duangpic5.png" /></li>
+					<li><img src="images/duangpic6.png" /></li>
+				</ul>
+			</div>
+		</div>
+		<button class="lunbo-left bbtn" id="ll">左</button>
+		<button class="lunbo-right bbtn" id="rr">右</button>
+	</div>
+</body>
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script>
+
+	 $(document).ready(function(){
+
+             zdLunbo(782,400);  
+	 });
+
+  function zdLunbo(zdlength,zdInterTime){
+      var pbox=document.getElementById("pic-ul");
+      var wid=(pbox.children.length)*zdlength;
+      $("#pic-wrap").css("width",wid);
+      var ll=document.getElementById("ll");
+      var rr=document.getElementById("rr");
+    
+      var EventUtil={
+          addHandler:function(element,type,handler){
+             if(element.addEventListener){
+               element.addEventListener(type,handler,false);
+             }else if(element.attachEvent){
+               element.attachEvent("on"+type,handler);
+             }else{
+               element["on"+type]=null;
+             }
+          },
+
+           removeHandler:function(element,type,handler){
+             if(element.removeEventListener){
+               element.removeEventListener(type,handler,false);
+             }else if(element.detachEvent){
+               element.detachEvent("on"+type,handler);
+             }else{
+               element["on"+type]=null;
+             }
+          }
+      };
+      var moveLeft = function(){
+           $(pbox).animate({
+              left:zdlength,
+            },1,function(){
+              clearInterval(tOut);
+              EventUtil.removeHandler(ll,"click",moveLeft);
+               // 取li---------------------------------------
+                var a=$(pbox.children[0]).detach();
+                $(pbox).append(a);
+                // 取li---------------------------------------
+                $(pbox).animate({
+                    left:0
+                 },zdInterTime,function(){
+                   EventUtil.addHandler(ll,"click",moveLeft);
+                   tOut=setInterval(moveLeft,2000);
+               });
+            }); 
+      }
+
+       var moveRight = function(){
+           $(pbox).animate({
+              left:-zdlength
+            },1,function(){
+                 clearInterval(tOut);
+                 EventUtil.removeHandler(rr,"click",moveRight);
+                // 取li---------------------------------------
+                var a=$(pbox.children[pbox.children.length-1]).detach();
+                $(a).insertBefore(pbox.children[0]);
+                // 取li---------------------------------------
+                $(pbox).animate({
+                    left:0
+                 },zdInterTime,function(){
+                   EventUtil.addHandler(rr,"click",moveRight);
+                   tOut=setInterval(moveLeft,2000);
+               });
+            }); 
+       }
+
+      EventUtil.addHandler(ll,"click",moveLeft);
+      EventUtil.addHandler(rr,"click",moveRight);
+
+
+      var tOut=setInterval(moveLeft,1200);
+  }
+	</script>
+</html>
