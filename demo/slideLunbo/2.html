@@ -61,18 +61,15 @@
 <body>
 	<div class="wrap">
 		<div class="box">
-			<div class="pic-wrap">
+			<div class="pic-wrap" id="pic-wrap">
 				<ul id="pic-ul">
-          <!-- 这是最后一张图 -->
 					<li><img src="images/duangpic1.png" /></li>
-          <!-- 这是第一张图 -->
 					<li><img src="images/duangpic2.png" /></li>
 					<li><img src="images/duangpic3.png" /></li>
 					<li><img src="images/duangpic4.png" /></li>
 					<li><img src="images/duangpic5.png" /></li>
 					<li><img src="images/duangpic6.png" /></li>
 				</ul>
-
 			</div>
 		</div>
 		<button class="lunbo-left bbtn" id="ll">左</button>
@@ -84,47 +81,73 @@
 
 	 $(document).ready(function(){
 
-             var pbox=document.getElementById("pic-ul");
-             var wid=(pbox.children.length)*782;
-             $(".pic-wrap").css("width",wid);
-             var ll=document.getElementById("ll");
-             var rr=document.getElementById("rr");
-
-             var moveLeft = function(){
-                  $(pbox).animate({
-                     left:"+=782px",
-                   },1,function(){
-                     ll.removeEventListener("click",moveLeft,false);
-                      // 取li---------------------------------------
-                       var a=$(pbox.children[0]).detach();
-                       $(pbox).append(a);
-                       // 取li---------------------------------------
-                       $(pbox).animate({
-                           left:"-=782px"
-                        },500,function(){
-                          ll.addEventListener("click",moveLeft,false);
-                      });
-                   }); 
-             }
-
-              var moveRight = function(){
-                  $(pbox).animate({
-                     left:"-=782px"
-                   },1,function(){
-                         rr.removeEventListener("click",moveRight,false);
-                       // 取li---------------------------------------
-                       var a=$(pbox.children[pbox.children.length-1]).detach();
-                       $(a).insertBefore(pbox.children[0]);
-                       // 取li---------------------------------------
-                       $(pbox).animate({
-                           left:"+=782px"
-                        },500,function(){
-                          rr.addEventListener("click",moveRight,false);
-                      });
-                   }); 
-              }
-             ll.addEventListener("click",moveLeft,false);
-             rr.addEventListener("click",moveRight,false);
+             zdLunbo(782,400);  
 	 });
+
+  function zdLunbo(zdlength,zdInterTime){
+      var pbox=document.getElementById("pic-ul");
+      var wid=(pbox.children.length)*zdlength;
+      $("#pic-wrap").css("width",wid);
+      var ll=document.getElementById("ll");
+      var rr=document.getElementById("rr");
+    
+      var EventUtil={
+          addHandler:function(element,type,handler){
+             if(element.addEventListener){
+               element.addEventListener(type,handler,false);
+             }else if(element.attachEvent){
+               element.attachEvent("on"+type,handler);
+             }else{
+               element["on"+type]=null;
+             }
+          },
+
+           removeHandler:function(element,type,handler){
+             if(element.removeEventListener){
+               element.removeEventListener(type,handler,false);
+             }else if(element.detachEvent){
+               element.detachEvent("on"+type,handler);
+             }else{
+               element["on"+type]=null;
+             }
+          }
+      };
+      var moveLeft = function(){
+           $(pbox).animate({
+              left:zdlength,
+            },1,function(){
+              EventUtil.removeHandler(ll,"click",moveLeft);
+               // 取li---------------------------------------
+                var a=$(pbox.children[0]).detach();
+                $(pbox).append(a);
+                // 取li---------------------------------------
+                $(pbox).animate({
+                    left:0
+                 },zdInterTime,function(){
+                   EventUtil.addHandler(ll,"click",moveLeft);
+               });
+            }); 
+      }
+
+       var moveRight = function(){
+           $(pbox).animate({
+              left:-zdlength
+            },1,function(){
+                 EventUtil.removeHandler(rr,"click",moveRight);
+                // 取li---------------------------------------
+                var a=$(pbox.children[pbox.children.length-1]).detach();
+                $(a).insertBefore(pbox.children[0]);
+                // 取li---------------------------------------
+                $(pbox).animate({
+                    left:0
+                 },zdInterTime,function(){
+                   EventUtil.addHandler(rr,"click",moveRight);
+               });
+            }); 
+       }
+
+      EventUtil.addHandler(ll,"click",moveLeft);
+      EventUtil.addHandler(rr,"click",moveRight);
+  }
 	</script>
 </html>
